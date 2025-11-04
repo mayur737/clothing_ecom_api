@@ -3,11 +3,13 @@ require("dotenv").config();
 const cors = require("cors");
 const express = require("express");
 const mongoose = require("mongoose");
-
+const api = require("./api.js");
 
 const app = express();
 
 app.use(cors());
+
+app.use("/api", api);
 
 app.get("/ping", (_, res) => res.status(200).json({ message: "All Good" }));
 
