@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema(
   {
-    prodcut_name: { type: String, required: true },
-    product_type: {
+    name: { type: String, required: true },
+    type: {
       type: String,
       required: true,
       enum: [
@@ -15,7 +15,13 @@ const productSchema = new mongoose.Schema(
         "Ethnic Wear",
       ],
     },
-    product_size: { type: String, required: true },
+    price: { type: String },
+    is_active: { type: Boolean, default: true },
+    image: { type: mongoose.Schema.Types.ObjectId, ref: "FileObject" },
+    size: [{ type: String, required: true }],
+    color: { type: String },
+    rating: [{ type: Number, min: 0, max: 5, default: 0 }],
+    num_reviews: { type: Number, default: 0 },
     product_for: { type: String, enum: ["Men", "Women", "Boy", "Girl"] },
   },
   { timestamps: true }

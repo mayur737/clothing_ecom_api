@@ -1,11 +1,13 @@
 const { Router, json } = require("express");
 const authRoutes = require("./routes/auth.routes");
+const adminRoutes = require("./routes/admin.routes");
 
 const router = Router();
 
 router.use(json());
 
 router.use("/auth", authRoutes);
+router.use("/admin", adminRoutes);
 
 router.use((_, res) => {
     res.status(404).json({ error: "Not Found ❌" });
