@@ -18,6 +18,7 @@ const userSchema = new mongoose.Schema(
       till: Date,
     },
     isSuperAdmin: { type: Boolean, default: false },
+    isAdmin: { type: Boolean, default: false },
     isVerified: { type: Boolean, default: false },
   },
   { timestamps: true }

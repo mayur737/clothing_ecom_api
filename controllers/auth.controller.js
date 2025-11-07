@@ -46,9 +46,13 @@ const signup = async (req, res, next) => {
 
 const login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    const { email, password, isAdmin } = req.body;
+    console.log("req.body", req.body)
     const user = await User.findOne({ email });
     if (!user) return next({ st: 400, ms: "Account not found" });
+
+    if (!user.isAdmin && isAdmin && !user.isSuperAdmin)
+      return next({ st: 403, ms: "Access Denied" });
 
     if (!(await bcrypt.compare(password, user.password)))
       return next({ st: 401, ms: "Invalid Credentials" });
@@ -63,9 +67,9 @@ const login = async (req, res, next) => {
 
       const subject = "Welcome to Clothing Ecom!";
       const body = newUserMail({
-        otp: newUser.otp.code,
+        otp: user.otp.code,
       });
-      sendMail(newUser.email, subject, body);
+      sendMail(user.email, subject, body);
       return res.status(201).json({
         data: {
           message: "An OTP has been sent to your Email, Verify your account",
@@ -99,7 +103,7 @@ const login = async (req, res, next) => {
 
 const verifyOtp = async (req, res, next) => {
   try {
-    const { email, code } = req.body;
+    const { email, otp } = req.body;
     const user = await User.findOne({ email });
     if (!user) return next({ st: 400, ms: "Account not found!" });
     if (user.otp.$isEmpty()) return next({ st: 400, ms: "Invalid OTP Request" });
@@ -154,9 +158,9 @@ const forgotPassword = async (req, res, next) => {
     await user.save();
     const subject = "Password reset OTP!";
     const body = userPasswordResetMail({
-      otp: newUser.otp.code,
+      otp: user.otp.code,
     });
-    sendMail(newUser.email, subject, body);
+    sendMail(user.email, subject, body);
     return res.status(201).json({
       data: {
         message: "An OTP has been sent to your Email",
@@ -222,15 +226,15 @@ const resendOtp = async (req, res, next) => {
 
     await user.save();
     const subject = "Welcome to Clothing Ecom!";
-      const body = otpResendMail({
-        otp: newUser.otp.code,
-      });
-      sendMail(newUser.email, subject, body);
-      return res.status(201).json({
-        data: {
-          message: "An OTP has been sent to your Email",
-        },
-      });
+    const body = otpResendMail({
+      otp: newUser.otp.code,
+    });
+    sendMail(newUser.email, subject, body);
+    return res.status(201).json({
+      data: {
+        message: "An OTP has been sent to your Email",
+      },
+    });
   } catch (error) {
     console.log(error);
     next({ st: 500, ms: error.message });

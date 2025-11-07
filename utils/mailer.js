@@ -1,11 +1,16 @@
 const nodemailer = require("nodemailer");
-const Smtp = require("../models/Smtp");
 
 exports.sendMail = async (to = "", subject = "", text = "") => {
   console.log("Send Mail:", { to, subject, text });
+  const smtp = {
+    host: process.env.EMHOST,
+    port: process.env.EMPORT,
+    user: process.env.EMUSER,
+    pass: process.env.EMPASS,
+    from: process.env.EMFROM
+  }
 
   try {
-    const smtp = await Smtp.findOne({ isDefault: true }).lean();
     if (!smtp) throw new Error("No default smtp found");
     const transporter = nodemailer.createTransport({
       secure: smtp.secure !== "None",
@@ -20,7 +25,7 @@ exports.sendMail = async (to = "", subject = "", text = "") => {
     const verify = await transporter.verify();
     console.log("SMTP verification:", verify);
 
-    const from = `${smtp.fromName} <${smtp.fromEmail}>`;
+    const from = smtp.from;
 
     const { response } = await transporter.sendMail({
       from,
