@@ -2,9 +2,9 @@ const Product = require("../../models/Product");
 
 const addProduct = async (req, res, next) => {
     try {
-        const { name, type, price, is_active, image, size, color, product_for } = req.body;
+        const { name, type, price, is_active, image, size, color } = req.body;
         await Product.create({
-            name, type, price, is_active, image, size, color, product_for
+            name, type, price, is_active, image, size, color
         });
         res.status(200).json({ data: { message: "Product added successfully" } })
     } catch (error) {
@@ -46,7 +46,7 @@ const getProduct = async (req, res, next) => {
 const putProduct = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { name, type, price, is_active, image, size, color, product_for } = req.body;
+        const { name, type, price, is_active, image, size, color } = req.body;
         const product = await Product.findById(id);
         if (!product) next({ st: 400, ms: "Product not found" })
 
@@ -57,7 +57,6 @@ const putProduct = async (req, res, next) => {
         if (image) product.image = image;
         if (size) product.size = size;
         if (color) product.color = color;
-        if (product_for) product.product_for = product_for;
 
         await product.save();
 

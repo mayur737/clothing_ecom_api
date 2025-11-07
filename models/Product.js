@@ -7,12 +7,10 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
       enum: [
-        "Sports Wear",
-        "Casual Wear",
-        "Formals",
-        "Footwear",
-        "Sleep Wear",
-        "Ethnic Wear",
+        "Shoes",
+        "Shirts",
+        "Pants",
+        "Accesories",
       ],
     },
     price: { type: String },
@@ -22,7 +20,6 @@ const productSchema = new mongoose.Schema(
     color: { type: String },
     rating: [{ type: Number, min: 0, max: 5, default: 0 }],
     num_reviews: { type: Number, default: 0 },
-    product_for: { type: String, enum: ["Men", "Women", "Boy", "Girl"] },
   },
   { timestamps: true }
 );
